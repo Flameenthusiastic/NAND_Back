@@ -9,7 +9,8 @@ import crud
 app = FastAPI()
 
 origins = [
-    "http://localhost:5501"
+    "http://localhost:5501",
+    "https://nand-application.herokuapp.com"
 ]
 
 app.add_middleware(
