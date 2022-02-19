@@ -31,7 +31,7 @@ async def root():
 
 
 @app.get("/users")
-async def get_users():
+async def get_all_users():
     users = await crud.get_all_users()
     resp = {
         "status": "ok", 
@@ -42,7 +42,7 @@ async def get_users():
 
 
 @app.get("/user")
-async def get_user(uuid: str = Form(...)):
+async def get_user(uuid: str):
     user = await crud.get_user(uuid)
     resp = {
         "status": "ok",
@@ -52,7 +52,7 @@ async def get_user(uuid: str = Form(...)):
 
 
 @app.get("/history")
-async def get_history(uuid: str = Form(...)):
+async def get_history(uuid: str):
     history = await crud.get_history(uuid)
     resp = {
         "status": "ok",
@@ -60,27 +60,43 @@ async def get_history(uuid: str = Form(...)):
     }
     return resp
 
+@app.get("/history-related-user")
+async def get_history_related_user(user_uuid: str):
+    print("aaaa")
+    histories = await crud.get_history_related_user(user_uuid)
+    print("bbbbb")
+    resp = {
+        "status": "ok",
+        "count": len(histories),
+        "data": histories
+    }
+    return resp
+
 
 # 投稿機能を作る
 @app.post("/user")
 async def post(name: str = Form(...)):
-    uuid = await crud.create_user(name)
-    return JSONResponse(content={"status": "ok", "uuid": uuid, "name": name}, status_code=status.HTTP_201_CREATED)
+    uuid_list = await crud.create_user(name)
+    user_uuid = uuid_list[0]
+    uuid = uuid_list[1]
+    return JSONResponse(content={"status": "ok", "user_uuid": user_uuid,"uuid": uuid, "name": name}, status_code=status.HTTP_201_CREATED)
 
 
 @app.post("/history")
 async def post(
+    user_uuid: str = Form(...),
     area: str = Form(...),
-    district: str = Form(...),
+    city: str = Form(...),
     restaurant: str = Form(...),
     hotel: str = Form(...)
     ):
-    uuid = await crud.create_history(area, district, restaurant, hotel)
+    uuid = await crud.create_history(user_uuid, area, city, restaurant, hotel)
     return JSONResponse(content={
         "status": "ok",
+        "user_uuid": user_uuid,
         "uuid": uuid,
         "area":area,
-        "district":district,
+        "city":city,
         "restaurant":restaurant,
         "hotel":hotel
         }, status_code=status.HTTP_201_CREATED)
