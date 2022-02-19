@@ -29,24 +29,36 @@ async def get_history(uuid: str):
         data.append(post)
     return data
 
+async def get_history_related_user(user_uuid: str):
+    docs = db.collection("histories").where("user_uuid", "==", user_uuid).stream()
+    data = []
+    for doc in docs:
+        post = {"id": doc.id, **doc.to_dict()}
+        data.append(post)
+    print(data)
+    return data
+
 
 async def create_user(name: str) -> str:
+    user_uuid = str(uuid4())
     uuid = str(uuid4())
     doc_ref = db.collection("users").document()
     doc_ref.set({
+        "user_uuid":user_uuid,
         "uuid": uuid,
         "name": name,
     })
-    return uuid
+    return [user_uuid, uuid]
 
 
-async def create_history(area: str, district: str, restaurant: str, hotel: str):
+async def create_history(user_uuid: str, area: str, city: str, restaurant: str, hotel: str):
     uuid = str(uuid4())
     doc_ref = db.collection("histories").document()
     doc_ref.set({
+        "user_uuid": user_uuid,
         "uuid": uuid,
         "area": area,
-        "district": district,
+        "city": city,
         "restaurant": restaurant,
         "hotel": hotel
     })
