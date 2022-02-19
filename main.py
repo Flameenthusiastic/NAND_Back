@@ -10,7 +10,9 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5501",
-    "https://nand-application.herokuapp.com"
+    "http://127.0.0.1:5501/",
+    "https://nand-application.herokuapp.com",
+    "https://nand-e7173.web.app/"
 ]
 
 app.add_middleware(
