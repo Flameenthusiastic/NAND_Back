@@ -40,8 +40,8 @@ async def get_all_users():
 
 
 @app.get("/user")
-async def get_user(uuid: str):
-    user = await crud.get_user(uuid)
+async def get_user(user_uuid: str):
+    user = await crud.get_user(user_uuid)
     resp = {
         "status": "ok",
         "data": user 
@@ -60,9 +60,7 @@ async def get_history(uuid: str):
 
 @app.get("/history-related-user")
 async def get_history_related_user(user_uuid: str):
-    print("aaaa")
     histories = await crud.get_history_related_user(user_uuid)
-    print("bbbbb")
     resp = {
         "status": "ok",
         "count": len(histories),
@@ -74,10 +72,8 @@ async def get_history_related_user(user_uuid: str):
 # 投稿機能を作る
 @app.post("/user")
 async def post(name: str = Form(...)):
-    uuid_list = await crud.create_user(name)
-    user_uuid = uuid_list[0]
-    uuid = uuid_list[1]
-    return JSONResponse(content={"status": "ok", "user_uuid": user_uuid,"uuid": uuid, "name": name}, status_code=status.HTTP_201_CREATED)
+    user_uuid = await crud.create_user(name)
+    return JSONResponse(content={"status": "ok", "user_uuid": user_uuid, "name": name}, status_code=status.HTTP_201_CREATED)
 
 
 @app.post("/history")
@@ -101,9 +97,9 @@ async def post(
 
 
 @app.put("/user")
-async def put(uuid: str = Form(...), name: str = Form(...)):
-    name = await crud.update_user(uuid, name)
-    return JSONResponse(content={"status": "ok", "uuid": uuid, "name": name}, status_code=status.HTTP_200_OK)
+async def put(user_uuid: str = Form(...), name: str = Form(...)):
+    name = await crud.update_user(user_uuid, name)
+    return JSONResponse(content={"status": "ok", "user_uuid": user_uuid, "name": name}, status_code=status.HTTP_200_OK)
 
 
 # 起動

@@ -12,8 +12,8 @@ async def get_all_users():
     return data
 
 
-async def get_user(uuid: str):
-    docs = db.collection("users").where("uuid", "==", uuid).stream()
+async def get_user(user_uuid: str):
+    docs = db.collection("users").where("user_uuid", "==", user_uuid).stream()
     data = []
     for doc in docs:
         post = {"id": doc.id, **doc.to_dict()}
@@ -41,14 +41,12 @@ async def get_history_related_user(user_uuid: str):
 
 async def create_user(name: str) -> str:
     user_uuid = str(uuid4())
-    uuid = str(uuid4())
     doc_ref = db.collection("users").document()
     doc_ref.set({
         "user_uuid":user_uuid,
-        "uuid": uuid,
         "name": name,
     })
-    return [user_uuid, uuid]
+    return user_uuid
 
 
 async def create_history(user_uuid: str, area: str, city: str, restaurant: str, hotel: str):
@@ -65,8 +63,8 @@ async def create_history(user_uuid: str, area: str, city: str, restaurant: str, 
     return uuid
 
 
-async def update_user(uuid: str, name: str):
-    docs = db.collection("users").where("uuid", "==", uuid).stream()
+async def update_user(user_uuid: str, name: str):
+    docs = db.collection("users").where("user_uuid", "==", user_uuid).stream()
     data = []
     for doc in docs:
         post = {"id": doc.id, **doc.to_dict()}
