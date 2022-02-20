@@ -11,7 +11,6 @@ app = FastAPI()
 origins = [
     "http://localhost:5501",
     "http://127.0.0.1:5501/",
-    "https://nand-application.herokuapp.com",
     "https://nand-e7173.web.app/"
 ]
 
@@ -60,7 +59,7 @@ async def get_history(uuid: str):
     }
     return resp
 
-@app.get("/history-related-user")
+@app.get("/history_related_user")
 async def get_history_related_user(user_uuid: str):
     histories = await crud.get_history_related_user(user_uuid)
     resp = {
